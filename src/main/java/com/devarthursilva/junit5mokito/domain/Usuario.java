@@ -7,8 +7,8 @@ import lombok.*;
 @NoArgsConstructor
 @Data //integra o get, set, tostring e equals e hashcode
 @Entity
-public class User {
-
+public class Usuario {
+    
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
