@@ -4,6 +4,7 @@ import com.devarthursilva.junit5mokito.domain.Usuario;
 import com.devarthursilva.junit5mokito.domain.dto.UsuarioDTO;
 import com.devarthursilva.junit5mokito.repositories.UserRepository;
 import com.devarthursilva.junit5mokito.services.UserService;
+import com.devarthursilva.junit5mokito.services.exceptions.DataIntegratyViolationException;
 import com.devarthursilva.junit5mokito.services.exceptions.ObjectNotFoundException;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +36,21 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Usuario create(UsuarioDTO obj) {
+        findByEmail(obj);
         return repository.save(mapper.map(obj, Usuario.class));
+    }
+
+    @Override
+    public Usuario update(UsuarioDTO obj) {
+        findByEmail(obj);
+        return repository.save(mapper.map(obj, Usuario.class));
+    }
+
+    private void findByEmail(UsuarioDTO obj) {
+        Optional<Usuario> user = repository.findByEmail(obj.getEmail());
+
+        if (user.isPresent() && !user.get().getId().equals(obj.getId())) {
+            throw new DataIntegratyViolationException("E-mail já cadastrado!");
+        }
     }
 }
