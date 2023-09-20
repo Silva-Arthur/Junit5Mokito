@@ -3,6 +3,7 @@ package com.devarthursilva.junit5mokito.services.impl;
 import com.devarthursilva.junit5mokito.domain.Usuario;
 import com.devarthursilva.junit5mokito.domain.dto.UsuarioDTO;
 import com.devarthursilva.junit5mokito.repositories.UserRepository;
+import com.devarthursilva.junit5mokito.services.exceptions.ObjectNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -48,20 +49,38 @@ class UserServiceImplTest {
 
     @Test
     void whenFindByIdThenReturnUsuarioInstance() {
+        //mokar a informação
         when( // quando
             repository.findById( //este método for chamado
                     anyInt() //com qualquer Integer
             )
         ).thenReturn(optionalUser); // retorne meu fake optionalUser
 
+        // realizar a requisicao que foi mokada acima
         Usuario response = service.findById(ID); // realiza a requeisicao
 
+        // realizar as validações para o TESTE
         assertNotNull(response); // verifica se a resposta nao é nula
         assertEquals(Usuario.class, response.getClass()); // verifica se a classe de retorno é a esperada
         assertEquals(ID, response.getId());
         assertEquals(NAME, response.getName());
         assertEquals(EMAIL, response.getEmail());
     }
+
+    @Test
+    void whenFindByIdThenReturnAnObjectNotfountException() {
+        when(
+            repository.findById(anyInt())
+        ).thenThrow(new ObjectNotFoundException("Objeto não encontrado"));
+
+        try {
+            service.findById(ID);
+        } catch (ObjectNotFoundException ex) {
+            assertEquals(ObjectNotFoundException.class, ex.getClass());
+            assertEquals("Objeto não encontrado", ex.getMessage());
+        }
+    }
+
 
     @Test
     void findAll() {
