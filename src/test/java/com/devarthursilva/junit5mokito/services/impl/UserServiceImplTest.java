@@ -31,6 +31,7 @@ class UserServiceImplTest {
     public static final String PASSWORD = "123";
     public static final String OBJETO_NAO_ENCONTRADO = "Objeto não encontrado";
     public static final int INDEX = 0;
+    public static final String E_MAIL_JA_CADASTRADO = "E-mail já cadastrado!";
 
     @InjectMocks // cria uma instancia real de usuarioservice, porém os outros mocks, ele vai criar de "mentira"
     private UserServiceImpl service;
@@ -128,12 +129,37 @@ class UserServiceImplTest {
             service.create(userDTO);
         } catch (DataIntegratyViolationException ex) {
             assertEquals(DataIntegratyViolationException.class, ex.getClass());
-            assertEquals("E-mail já cadastrado!", ex.getMessage());
+            assertEquals(E_MAIL_JA_CADASTRADO, ex.getMessage());
         }
     }
 
     @Test
-    void update() {
+    void whenUdateThenReturnSuccess() {
+        when(
+                repository.save(any())
+        ).thenReturn(user);
+
+        Usuario response = service.update(userDTO);
+
+        assertNotNull(response);
+        assertEquals(Usuario.class, response.getClass());
+        assertEquals(ID, response.getId());
+        assertEquals(NAME, response.getName());
+        assertEquals(EMAIL, response.getEmail());
+        assertEquals(PASSWORD, response.getPassword());
+    }
+
+    @Test
+    void whenUpdateThenReturnAnDataIntegrityViolationException() {
+        when(repository.findByEmail(anyString())).thenReturn(optionalUser);
+
+        try {
+            optionalUser.get().setId(2);
+            service.update(userDTO);
+        } catch (DataIntegratyViolationException ex) {
+            assertEquals(DataIntegratyViolationException.class, ex.getClass());
+            assertEquals(E_MAIL_JA_CADASTRADO, ex.getMessage());
+        }
     }
 
     @Test
