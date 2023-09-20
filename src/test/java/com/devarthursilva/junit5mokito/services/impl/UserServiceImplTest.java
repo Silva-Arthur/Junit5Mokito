@@ -3,6 +3,7 @@ package com.devarthursilva.junit5mokito.services.impl;
 import com.devarthursilva.junit5mokito.domain.Usuario;
 import com.devarthursilva.junit5mokito.domain.dto.UsuarioDTO;
 import com.devarthursilva.junit5mokito.repositories.UserRepository;
+import com.devarthursilva.junit5mokito.services.exceptions.DataIntegratyViolationException;
 import com.devarthursilva.junit5mokito.services.exceptions.ObjectNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -17,7 +18,7 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
 
 
@@ -103,7 +104,32 @@ class UserServiceImplTest {
     }
 
     @Test
-    void create() {
+    void whenCreateThenReturnSuccess() {
+        when(
+            repository.save(any())
+        ).thenReturn(user);
+
+        Usuario response = service.create(userDTO);
+
+        assertNotNull(response);
+        assertEquals(Usuario.class, response.getClass());
+        assertEquals(ID, response.getId());
+        assertEquals(NAME, response.getName());
+        assertEquals(EMAIL, response.getEmail());
+        assertEquals(PASSWORD, response.getPassword());
+    }
+
+    @Test
+    void whenCreateThenReturnAnDataIntegrityViolationException() {
+        when(repository.findByEmail(anyString())).thenReturn(optionalUser);
+
+        try {
+            optionalUser.get().setId(2);
+            service.create(userDTO);
+        } catch (DataIntegratyViolationException ex) {
+            assertEquals(DataIntegratyViolationException.class, ex.getClass());
+            assertEquals("E-mail já cadastrado!", ex.getMessage());
+        }
     }
 
     @Test
