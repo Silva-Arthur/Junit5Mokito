@@ -122,7 +122,9 @@ class UserServiceImplTest {
 
     @Test
     void whenCreateThenReturnAnDataIntegrityViolationException() {
-        when(repository.findByEmail(anyString())).thenReturn(optionalUser);
+        when(
+            repository.findByEmail(anyString())
+        ).thenReturn(optionalUser);
 
         try {
             optionalUser.get().setId(2);
@@ -151,7 +153,9 @@ class UserServiceImplTest {
 
     @Test
     void whenUpdateThenReturnAnDataIntegrityViolationException() {
-        when(repository.findByEmail(anyString())).thenReturn(optionalUser);
+        when(
+            repository.findByEmail(anyString())
+        ).thenReturn(optionalUser);
 
         try {
             optionalUser.get().setId(2);
@@ -163,7 +167,10 @@ class UserServiceImplTest {
     }
 
     @Test
-    void delete() {
+    void deleteWithSuccess() {
+        when(
+            repository.findById(anyInt())
+        ).thenReturn(optionalUser);
     }
 
     private void startUser() {
