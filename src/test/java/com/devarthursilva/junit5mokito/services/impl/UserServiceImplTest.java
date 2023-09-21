@@ -19,7 +19,7 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 
 @SpringBootTest
@@ -171,6 +171,32 @@ class UserServiceImplTest {
         when(
             repository.findById(anyInt())
         ).thenReturn(optionalUser);
+
+        doNothing() // Não faça nada
+            .when(repository) // quando o OBJ chamado o método ->
+                .deleteById(anyInt()); // quando o OBJ chamar esse método aqui!
+
+        service.delete(ID);
+
+        // Verificações
+        verify( // verifica
+            repository, // meu repositório
+            times(1) // quantas vezes o meu repositório foi chamado, se for mais que 1, está errado
+        ).deleteById(anyInt()); // quantas vezes o meu repositório foi chamado neste método aqui
+    }
+
+    @Test
+    void deleteWithObjectNotFoundException() {
+        when(
+            repository.findById(anyInt())
+        ).thenThrow(new ObjectNotFoundException(OBJETO_NAO_ENCONTRADO));
+
+        try {
+            service.delete(ID);
+        } catch (Exception ex) {
+            assertEquals(ObjectNotFoundException.class, ex.getClass());
+            assertEquals(OBJETO_NAO_ENCONTRADO, ex.getMessage());
+        }
     }
 
     private void startUser() {
