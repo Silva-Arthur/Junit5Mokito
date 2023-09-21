@@ -102,7 +102,7 @@ class UserResourceTest {
     @Test
     void whenCreateThenReturnCreated() {
         when(
-                service.create(any())
+            service.create(any())
         ).thenReturn(user);
 
         ResponseEntity<UsuarioDTO> response = resource.create(userDTO);
@@ -114,7 +114,26 @@ class UserResourceTest {
     }
 
     @Test
-    void update() {
+    void whenUpdateThenReturnSuccess() {
+        when(
+            service.update(any())
+        ).thenReturn(user);
+
+        when(
+            mapper.map(any(), any())
+        ).thenReturn(userDTO);
+
+        ResponseEntity<UsuarioDTO> response = resource.update(ID, userDTO);
+
+        assertNotNull(response);
+        assertNotNull(response.getBody());
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(ResponseEntity.class, response.getClass());
+        assertEquals(UsuarioDTO.class, response.getBody().getClass());
+
+        assertEquals(ID, response.getBody().getId());
+        assertEquals(NAME, response.getBody().getName());
+        assertEquals(EMAIL, response.getBody().getEmail());
     }
 
     @Test
