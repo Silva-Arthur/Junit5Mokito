@@ -1,5 +1,6 @@
 package com.devarthursilva.junit5mokito.resources;
 
+import com.devarthursilva.junit5mokito.domain.Usuario;
 import com.devarthursilva.junit5mokito.domain.dto.UsuarioDTO;
 import com.devarthursilva.junit5mokito.services.UserService;
 import org.modelmapper.ModelMapper;
@@ -38,9 +39,10 @@ public class UserResource {
 
     @PostMapping
     public ResponseEntity<UsuarioDTO> create(@RequestBody UsuarioDTO obj) {
+        Usuario usuario = service.create(obj);
+
         URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path(ID).buildAndExpand(
-                service.create(obj) // cria o Usuário
-                        .getId()).toUri();
+                usuario.getId()).toUri();
 
         return ResponseEntity.created(uri).build();
     }
