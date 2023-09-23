@@ -5,9 +5,10 @@ import com.devarthursilva.junit5mokito.domain.dto.UsuarioDTO;
 import com.devarthursilva.junit5mokito.services.impl.UserServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,7 +22,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.*;
 
-//@ExtendWith(SpringExtension.class)
+@ExtendWith(MockitoExtension.class)
 class UserResourceTest {
 
     public static final Integer ID = 1;
@@ -46,7 +47,7 @@ class UserResourceTest {
 
     @BeforeEach
     void setUp() {
-        MockitoAnnotations.openMocks(this);
+        //MockitoAnnotations.openMocks(this); // com o uso do, não é necessário abrir os mocks
         startUser();
     }
 
