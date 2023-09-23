@@ -7,9 +7,10 @@ import com.devarthursilva.junit5mokito.services.exceptions.DataIntegratyViolatio
 import com.devarthursilva.junit5mokito.services.exceptions.ObjectNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
 
 import java.util.List;
@@ -21,7 +22,7 @@ import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
 
-//@ExtendWith(SpringExtension.class)
+@ExtendWith(MockitoExtension.class)
 class UserServiceImplTest {
 
     public static final Integer ID = 1;
@@ -47,7 +48,7 @@ class UserServiceImplTest {
 
     @BeforeEach
     void setUp() {
-        MockitoAnnotations.openMocks(this);
+        //MockitoAnnotations.openMocks(this); // com o uso do, não é necessário abrir os mocks
         startUser();
     }
 
@@ -167,10 +168,6 @@ class UserServiceImplTest {
 
     @Test
     void deleteWithSuccess() {
-        when(
-            repository.findById(anyInt())
-        ).thenReturn(optionalUser);
-
         doNothing() // Não faça nada
             .when(repository) // quando o OBJ chamado o método ->
                 .deleteById(anyInt()); // quando o OBJ chamar esse método aqui!
@@ -186,10 +183,6 @@ class UserServiceImplTest {
 
     @Test
     void deleteWithObjectNotFoundException() {
-        when(
-            repository.findById(anyInt())
-        ).thenThrow(new ObjectNotFoundException(OBJETO_NAO_ENCONTRADO));
-
         try {
             service.delete(ID);
         } catch (Exception ex) {

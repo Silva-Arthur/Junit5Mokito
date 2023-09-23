@@ -4,8 +4,9 @@ import com.devarthursilva.junit5mokito.services.exceptions.DataIntegratyViolatio
 import com.devarthursilva.junit5mokito.services.exceptions.ObjectNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
-import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mock.web.MockHttpServletRequest;
@@ -14,7 +15,7 @@ import java.time.LocalDateTime;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-//@ExtendWith(SpringExtension.class)
+@ExtendWith(MockitoExtension.class)
 class ResourceExceptionHandlerTest {
 
     public static final String OBJETO_NAO_ECONTRADO = "Objeto não econtrado!";
@@ -25,7 +26,7 @@ class ResourceExceptionHandlerTest {
 
     @BeforeEach
     void setUp() {
-        MockitoAnnotations.openMocks(this);
+        //MockitoAnnotations.openMocks(this); // com o uso do, não é necessário abrir os mocks
     }
 
     @Test
